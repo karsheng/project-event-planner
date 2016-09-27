@@ -1,0 +1,16 @@
+{
+  "name": "meet-up-event-planner",
+  "version": "1.0.0",
+  "description": "",
+  "author": "Lee Kar Sheng",
+  "main": "gulpfile.js",
+  "devDependencies": {
+    "browser-sync": "^2.16.0",
+    "eslint": "^3.5.0",
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^3.1.1",
+    "gulp-sass": "^2.3.2",
+    "gulp-uglify": "^2.0.0",
+    "gulp-watch": "^4.3.9"
+  }
+}
