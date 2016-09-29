@@ -4,11 +4,54 @@
 		<!-- Latest compiled and minified CSS -->
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">		
 		<link rel="stylesheet" href="css/styles.css">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<style>
+			#sign-up-form {
+				margin: 30px auto 30px auto;
+				max-width: 350px;
+			}
+		</style>
 	</head>
 	<body>
-		<section class="container">
-			
+		<main class="container">
+		<section id="sign-up-form">
+			<h2 class="text-center">Meet-Up Event Planner</h2>
+			<br>
+			<form class="form-horizontal">
+			  <div class="form-group">
+			    <label class="col-sm-2 control-label" for="inputName">Your Name</label>
+			    <div class="col-sm-10">
+			    	<input type="text" class="form-control" id="inputName" placeholder="John Appleseed" autofocus required autocomplete="name">	
+			    </div>
+			  </div>		
+			  <div class="form-group">
+			    <label class="col-sm-2 control-label" for="inputEmail">Email
+			    </label>
+			    <div class="col-sm-10">
+			    	<input type="email" class="form-control" id="inputEmail" placeholder="example@domain.com" required autocomplete="email">	
+			    </div>
+			  </div>
+			  <div class="form-group">
+			    <label class="col-sm-2 control-label" for="inputPassword">Password</label>
+			    <div class="col-sm-10">
+			    	<input type="password" class="form-control" id="inputPassword"  required>	
+			    </div>
+			  </div>
+			  <div class="form-group">
+			    <label class="col-sm-2" for="confirmPassword">Confirm Password</label>
+			    <div class="col-sm-10">
+			    	<input type="password" class="form-control" id="confirmPassword" required>	
+			    </div>
+			  </div>
+			  <button id="sign-up-button" type="submit" class="center-block btn btn-primary">Sign Up</button>
+			</form>
 		</section>
+		<div>
+			<p class="text-center"><small>Already a member? <a href="#">Sign In</a></small></p>
+		</div>
+		</main>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 			<!-- Latest compiled and minified JavaScript -->
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 		<script src="js/app.js"></script>
