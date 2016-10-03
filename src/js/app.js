@@ -13,9 +13,11 @@ var Event = function() {
 var ViewModel = function() {
 	var self = this;
 
+	self.selectedGuest = null;
 	self.eventList = ko.observableArray([]);
-	self.currentGuestList = ko.observableArray([]);
+	self.currentGuestList = ko.observableArray([{name: 'Steve Jobs'}, {name: 'Elon Musk'}]);
 
+	// add guest to list
 	self.addGuestToList = function(data, event) {
 		if(event.keyCode === 13) {
 			self.currentGuestList.push({name: event.target.value});
@@ -23,6 +25,13 @@ var ViewModel = function() {
 		}
 		return true;
 	};
+
+	// remove guest from currentGuestList	
+	self.removeGuest = function() {
+		var order = self.currentGuestList().indexOf(this);
+    	var selectedGuest = self.currentGuestList()[order];
+    	self.currentGuestList.remove(selectedGuest);
+	}
 };
 
 // initialize ViewModel and apply bindings
