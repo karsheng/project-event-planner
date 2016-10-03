@@ -5,14 +5,111 @@
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">		
 		<link rel="stylesheet" href="css/styles.css">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<style>
+			input[type=time]::-webkit-inner-spin-button,
+			input[type=time]::-webkit-outer-spin-button,
+			input[type=date]::-webkit-inner-spin-button, 
+			input[type=date]::-webkit-outer-spin-button { 
+			  -webkit-appearance: none; 
+			  margin: 0; 
+			}
+			
+			.start-time-div {
+				padding: 0 15px 0 0;
+			}
+
+		</style>
 	</head>
 	<body>
 		<main class="container">
 			<h1>Hello</h1>
+			<!-- Button trigger modal -->
+			<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#eventModal">
+			  Add an Event
+			</button>			
 		</main>
+		<!-- Modal -->
+		<section class="modal fade" id="eventModal" tabindex="-1" role="dialog" aria-labelledby="eventModalLabel">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title" id="eventModalLabel">Add an Event</h4>
+					</div>
+					<div class="modal-body">
+						<form class="form-horizontal">
+							<div class="form-group">
+								<label for="eventName" class="col-sm-2 control-label">Name</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" id="eventName" placeholder="Add a short, clear event name" required>
+								</div>
+							</div>
+							<!-- TODO
+							Make this to have autocomplete functionality -->
+							<div class="form-group">
+								<label for="eventLocation" class="col-sm-2 control-label">Location</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" id="eventLocation" placeholder="Include a place or address" onFocus="geolocate()" required>
+								</div>
+							</div>
+							<!-- TODO
+							Make this become datalist -->
+							<div class="form-group">
+								<label for="eventType" class="col-sm-2 control-label">Type</label>
+								<div class="col-sm-10">
+									<select id="eventType" class="form-control" required>
+										<option>Birthday Party</option>
+										<option>Conference Talk</option>
+										<option>Wedding</option>
+										<option>Other</option>
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="hostName" class="col-sm-2 control-label">Host</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" id="eventName" placeholder="Name of host, company, etc." required>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="startDateTime" class="col-xs-12 col-sm-2 control-label">Start</label>
+								<div class="col-xs-7 col-sm-4">
+									<input type="date" class="form-control" id="startDateTime" required>
+								</div>
+								<div class="start-time-div col-xs-5 col-sm-3">
+									<input type="time" class="form-control" id="startTime" value = "09:00"required>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="endDateTime" class="col-xs-12 col-sm-2 control-label">End</label>
+								<div class="col-xs-7 col-sm-4">
+									<input type="date" class="form-control" id="endDateTime" required>
+								</div>
+								<div class="start-time-div col-xs-5 col-sm-3">
+									<input type="time" class="form-control" id="endTime" value = "09:00"required>
+								</div>
+							</div>
+							<!-- TODO -->
+							<!-- To make guest list can be added and deleted dynamically -->
+							<div class="form-group">
+								<label for="guestList" class="col-sm-2 control-label">Guests</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" id="eventName" placeholder="Name of Guests" required>
+								</div>
+							</div>							
+						</form>		        
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-primary">Save changes</button>
+					</div>
+				</div>
+			</div>
+		</section>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 			<!-- Latest compiled and minified JavaScript -->
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDuoB62jzCkrFV9NVlNHj5cZTvXvjJAdbk&libraries=places&callback=initAutocomplete" async defer></script>
 		<script src="js/app.js"></script>
 	</body>
 </html>
