@@ -35,81 +35,78 @@ var initialEvents = [
 	}
 ];
 
-var newEvent = 	{
-	name: "",
-	location: "",
-	type: "",
-	host: "",
-	startDate: "",
-	startTime: "",
-	endDate: "",
-	endTime: "",
-	guests: []
+var newEmptyEvent = function() {
+	obj = {
+		name: "",
+		location: "",
+		type: "",
+		host: "",
+		startDate: "",
+		startTime: "09:00",
+		endDate: "",
+		endTime: "18:00",
+		guests: []	
+	};
+	return obj;
 };
 
 var ViewModel = function() {
 	var self = this;
 
-	var order = null;
-	var selectedEvent = null;
-
+	self.newEvent = null; 
 	self.eventList = ko.observableArray();
 
 	self.saveEventBtn = $('#saveEventBtn');
-	self.eventName = $('#eventName');
-	self.eventLocation = $('#eventLocation');
-	self.eventType = $('#eventType');
-	self.eventHost = $('#eventHost');
-	self.startDateTime = $('#startDateTime');
-	self.startTime = $('#startTime');
-	self.endDateTime = $('#endDateTime');
-	self.endTime = $('#endTime');
+	self.eventModalLabel = $('#eventModalLabel');
 
-	initialEvents.forEach(function(event) {
-		self.eventList.push(new Event(event));
-	});
+	// initialEvents.forEach(function(event) {
+	// 	self.eventList.push(new Event(event));
+	// });
 
-	self.currentEvent = ko.observable(self.eventList()[0]);
-
-	self.currentGuestList = ko.observableArray();
+	self.currentEvent = ko.observable();
 
 	// add guest to list
 	self.addGuestToList = function(data, event) {
 		if(event.keyCode === 13) {
-			self.currentGuestList.push(event.target.value);
+			self.currentEvent().guests.push(event.target.value);
 			event.target.value = "";
 		}
 		return true;
 	};
 
 	// remove guest from currentGuestList	
-	self.removeGuest = function() {
-		var order = self.currentGuestList().indexOf(this);
-		console.log(order);
-    	// var selectedGuest = self.currentGuestList()[order];
-		// self.currentGuestList.remove();
+	self.removeGuest = function(clickedGuest) {
+		self.currentEvent().guests.remove(clickedGuest);
 	};
 
 	self.saveEvent = function() {
 		// if it is a new event
 		if (self.saveEventBtn.html() === 'Add') {
-
-		} else {
-			// save event
-
+			self.eventList.push(self.currentEvent());
+			self.newEvent = null;
 		}
 	};
 
 	self.setEvent = function(clickedEvent) {
 		// change the button text to 'Save'
-		self.saveEventBtn.html('Save');
+		self.saveEventBtn.hide();
+		self.eventModalLabel.html('Edit Event');
 		self.currentEvent(clickedEvent);
+		self.newEvent = null;
 	};
 
 	self.addNewEvent = function() {
 		// clear value
+		self.saveEventBtn.show();
 		self.saveEventBtn.html('Add');
-		self.currentEvent(new Event(newEvent));
+		self.eventModalLabel.html('Add a New Event');
+
+		if (self.newEvent) {
+			self.currentEvent(self.newEvent);
+		} else {
+			self.newEvent = newEmptyEvent();
+			self.currentEvent(new Event(self.newEvent));
+		}
 	};
 };
 

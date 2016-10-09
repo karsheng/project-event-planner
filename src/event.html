@@ -51,7 +51,12 @@
 			<!-- Button trigger modal -->
 			<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#eventModal" data-bind="click: addNewEvent">
 			  Add an Event
-			</button>			
+			</button>
+			<section data-bind="visible: eventList().length === 0">
+				<div class="jumbotron">
+					<h4>No events saved yet.</h4>
+				</div>	
+			</section>
 			<section id="events" data-bind="foreach: eventList">
 				<div class="jumbotron" data-toggle="modal" data-target="#eventModal" data-bind="click: $parent.setEvent">
 					<h2 data-bind="text: name"></h2>
@@ -132,7 +137,7 @@
 								<label class="col-sm-2 control-label"></label>
 								<div class="col-sm-10">
 									<ul class="guest-list" data-bind="foreach: guests">
-										<a class="guest-list-item"><li data-bind="text: $data"></li><span class="glyphicon glyphicon-remove" data-bind="click: $parent.removeGuest"></span></a>
+										<a class="guest-list-item"><li data-bind="text: $data"></li><span class="glyphicon glyphicon-remove" data-bind="click: $parents[1].removeGuest"></span></a>
 									</ul>
 								</div>
 							</div>							
@@ -150,6 +155,6 @@
 			<!-- Latest compiled and minified JavaScript -->
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 		<script src="js/app.js"></script>
-		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDuoB62jzCkrFV9NVlNHj5cZTvXvjJAdbk&libraries=places&callback=initAutocomplete" async defer></script>		
+		<!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDuoB62jzCkrFV9NVlNHj5cZTvXvjJAdbk&libraries=places&callback=initAutocomplete" async defer></script>		 -->
 	</body>
 </html>
