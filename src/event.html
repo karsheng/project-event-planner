@@ -18,7 +18,7 @@
 			}
 			/*This is to make the autocomplete .pac-container visible in modal*/
 			.pac-container {
-			    z-index: 20;
+			    z-index: 30;
 			}
 			.modal {
 			    z-index: 20;   
@@ -47,11 +47,24 @@
 	</head>
 	<body>
 		<main class="container">
-			<h1>Hello</h1>
+			<h1>Event Page</h1>
 			<!-- Button trigger modal -->
-			<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#eventModal">
+			<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#eventModal" data-bind="click: addNewEvent">
 			  Add an Event
 			</button>			
+			<section id="events" data-bind="foreach: eventList">
+				<div class="jumbotron" data-toggle="modal" data-target="#eventModal" data-bind="click: $parent.setEvent">
+					<h2 data-bind="text: name"></h2>
+					<h4><span data-bind="text: type"></span> at <span data-bind="text: location"></span></h4>
+					<h5>Host: <span data-bind="text: host"></span></h5>
+					<h5>Start: <span data-bind="text: startDate"></span> <span data-bind="text: startTime"></span></h5>
+					<h5>End: <span data-bind="text: endDate"></span> <span data-bind="text: endTime"></span></h5>
+					<h5>Who's invited</h5>
+					<ul class="invitee" data-bind="foreach: guests">
+						<li data-bind="text: $data"></li>
+					</ul>
+				</div>
+			</section>						
 		</main>
 		<!-- Event Modal -->
 		<section class="modal fade" id="eventModal" tabindex="-1" role="dialog" aria-labelledby="eventModalLabel">
@@ -62,24 +75,24 @@
 						<h4 class="modal-title" id="eventModalLabel">Add an Event</h4>
 					</div>
 					<div class="modal-body">
-						<form class="form-horizontal">
+						<form class="form-horizontal" data-bind="with: currentEvent">
 							<div class="form-group">
 								<label for="eventName" class="col-sm-2 control-label">Name</label>
 								<div class="col-sm-10">
-									<input type="text" class="form-control" id="eventName" placeholder="Add a short, clear event name" required>
+									<input data-bind="value: name" type="text" class="form-control" id="eventName" placeholder="Add a short, clear event name" required>
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="eventLocation" class="col-sm-2 control-label">Location</label>
 								<div class="col-sm-10">
-									<input type="text" class="form-control" id="eventLocation" placeholder="Include a place or address" onFocus="geolocate()" required>
+									<input data-bind="value: location" type="text" class="form-control" id="eventLocation" placeholder="Include a place or address" onFocus="geolocate()" required>
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="eventType" class="col-sm-2 control-label">Type</label>
 								<div class="col-sm-10">
-									<input list="eventType" class="form-control" placeholder="Type the event type or select from the dropdown">
-									<datalist id="eventType"">
+									<input data-bind="value: type" id="eventType" list="event-options" class="form-control" placeholder="Type the event type or select from the dropdown">
+									<datalist id="event-options">
 										<option>Birthday Party</option>
 										<option>Conference Talk</option>
 										<option>Wedding</option>
@@ -90,36 +103,36 @@
 							<div class="form-group">
 								<label for="hostName" class="col-sm-2 control-label">Host</label>
 								<div class="col-sm-10">
-									<input type="text" class="form-control" id="eventHost" placeholder="Name of host, company, etc." required>
+									<input data-bind="value: host" type="text" class="form-control" id="eventHost" placeholder="Name of host, company, etc." required>
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="startDateTime" class="col-xs-12 col-sm-2 control-label">Start</label>
 								<div class="col-xs-7 col-sm-4">
-									<input type="date" class="form-control" id="startDateTime" required>
+									<input data-bind="value: startDate" type="date" class="form-control" id="startDateTime" required>
 								</div>
 								<div class="start-time-div col-xs-5 col-sm-3">
-									<input type="time" class="form-control" id="startTime" value = "09:00" required>
+									<input data-bind="value: startTime" type="time" class="form-control" id="startTime" required>
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="endDateTime" class="col-xs-12 col-sm-2 control-label">End</label>
 								<div class="col-xs-7 col-sm-4">
-									<input type="date" class="form-control" id="endDateTime" required>
+									<input data-bind="value: endDate" type="date" class="form-control" id="endDateTime" required>
 								</div>
 								<div class="start-time-div col-xs-5 col-sm-3">
-									<input type="time" class="form-control" id="endTime" value = "17:00" required>
+									<input data-bind="value: endTime" type="time" class="form-control" id="endTime" required>
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="guestInput" class="col-sm-2 control-label">Guest</label>
 								<div class="col-sm-10">
-									<input type="text" class="form-control" id="guestInput" data-bind="event: {keypress: addGuestToList, blur: addGuestToList}" placeholder="Enter name of guest" required>
+									<input type="text" class="form-control" id="guestInput" data-bind="event: {keypress: $parent.addGuestToList}" placeholder="Enter name of guest" required>
 								</div>
 								<label class="col-sm-2 control-label"></label>
 								<div class="col-sm-10">
-									<ul class="guest-list" data-bind="foreach: currentGuestList">
-										<a class="guest-list-item"><li data-bind="text: name"></li><span class="glyphicon glyphicon-remove" data-bind="click: $parent.removeGuest"></span></a>
+									<ul class="guest-list" data-bind="foreach: guests">
+										<a class="guest-list-item"><li data-bind="text: $data"></li><span class="glyphicon glyphicon-remove" data-bind="click: $parent.removeGuest"></span></a>
 									</ul>
 								</div>
 							</div>							
@@ -127,13 +140,10 @@
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-						<button id="saveEventBtn" type="button" class="btn btn-primary">Save changes</button>
+						<button id="saveEventBtn" type="button" class="btn btn-primary" data-bind="click: saveEvent"></button>
 					</div>
 				</div>
 			</div>
-		</section>
-		<section id="events">
-			
 		</section>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 		<script src="js/lib/knockout.3.4.0.js"></script>
