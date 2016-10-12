@@ -35,8 +35,8 @@ var initialEvents = [
 	}
 ];
 
-var newEmptyEvent = function() {
-	obj = {
+var EmptyEvent = function() {
+	var obj = {
 		name: "",
 		location: "",
 		type: "",
@@ -53,11 +53,12 @@ var newEmptyEvent = function() {
 var ViewModel = function() {
 	var self = this;
 
-	self.newEvent = null; 
+	self.newEvent = new Event(EmptyEvent()); 
 	self.eventList = ko.observableArray();
 
 	self.saveEventBtn = $('#saveEventBtn');
 	self.eventModalLabel = $('#eventModalLabel');
+	self.eventModal = $('#eventModal');
 
 	// initialEvents.forEach(function(event) {
 	// 	self.eventList.push(new Event(event));
@@ -67,6 +68,7 @@ var ViewModel = function() {
 
 	// add guest to list
 	self.addGuestToList = function(data, event) {
+		initAutocomplete();
 		if(event.keyCode === 13) {
 			self.currentEvent().guests.push(event.target.value);
 			event.target.value = "";
@@ -83,7 +85,8 @@ var ViewModel = function() {
 		// if it is a new event
 		if (self.saveEventBtn.html() === 'Add') {
 			self.eventList.push(self.currentEvent());
-			self.newEvent = null;
+			self.newEvent = new Event(EmptyEvent());
+			self.eventModal.modal('toggle');
 		}
 	};
 
@@ -92,7 +95,6 @@ var ViewModel = function() {
 		self.saveEventBtn.hide();
 		self.eventModalLabel.html('Edit Event');
 		self.currentEvent(clickedEvent);
-		self.newEvent = null;
 	};
 
 	self.addNewEvent = function() {
@@ -101,12 +103,7 @@ var ViewModel = function() {
 		self.saveEventBtn.html('Add');
 		self.eventModalLabel.html('Add a New Event');
 
-		if (self.newEvent) {
-			self.currentEvent(self.newEvent);
-		} else {
-			self.newEvent = newEmptyEvent();
-			self.currentEvent(new Event(self.newEvent));
-		}
+		self.currentEvent(self.newEvent);
 	};
 };
 
@@ -119,6 +116,7 @@ var placeSearch, autocomplete;
 function initAutocomplete() {
 	// Create the autocomplete object, restricting the search to geographical
 	// location types.
+
 	autocomplete = new google.maps.places.Autocomplete(
     	/** @type {!HTMLInputElement} */(document.getElementById('eventLocation')),
     	{types: ['geocode']});
@@ -141,6 +139,10 @@ function geolocate() {
   		});
 	}
 }
+
+$('#eventModal').on('shown.bs.modal', function (e) {
+  initAutocomplete();
+});
 
 // index.html page
 var signUp = $('#sign-up-button');
