@@ -4,6 +4,7 @@
 		<!-- Latest compiled and minified CSS -->
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">		
 		<link rel="stylesheet" href="css/styles.css">
+		<script src="https://www.gstatic.com/firebasejs/3.5.0/firebase.js"></script>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<style>
 			input[type=time]::-webkit-inner-spin-button,
@@ -52,6 +53,7 @@
 			<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#eventModal" data-bind="click: addNewEvent">
 			  Add an Event
 			</button>
+			<button id="btnLogOut" type="button" class="btn btn-danger btn-sm">Log Out</button>
 			<section data-bind="visible: eventList().length === 0">
 				<div class="jumbotron">
 					<h4>No events saved yet.</h4>
@@ -146,6 +148,7 @@
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 						<button id="saveEventBtn" type="button" class="btn btn-primary" data-bind="click: saveEvent">Add</button>
+						<button data-bind="click: stuff">suck</button>
 					</div>
 				</div>
 			</div>

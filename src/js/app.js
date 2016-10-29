@@ -1,3 +1,36 @@
+(function () {
+      // Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyBctIBxc2iUkzIfQM7D8ZMbJi_9fHhnMUU",
+        authDomain: "meetupeventplannerks.firebaseapp.com",
+        databaseURL: "https://meetupeventplannerks.firebaseio.com",
+        storageBucket: "meetupeventplannerks.appspot.com",
+        messagingSenderId: "254221471142"
+      };
+      firebase.initializeApp(config);
+
+    // real time authentication listener
+    firebase.auth().onAuthStateChanged(function(firebaseUser) {
+        if (firebaseUser) {
+            console.log(firebaseUser);
+            // TODO: show log out button when user is logged in
+        } else {
+            console.log('not logged in');
+            // TODO: hide log out btn when no user is logged in
+            window.location.href = 'index.html';
+        }
+    });
+})();
+
+
+// add log out function
+	const btnLogOut = $('#btnLogOut');
+
+    btnLogOut.click(function() {
+        firebase.auth().signOut();
+    })
+
+
 var Event = function(event) {
 	this.name = ko.observable(event.name);
 	this.location = ko.observable(event.location);
@@ -105,6 +138,17 @@ var ViewModel = function() {
 
 		self.currentEvent(self.newEvent);
 	};
+
+	self.incompleteFields = function() {
+		return (!$('#eventName').val() || !$('#eventLocation').val() || !$('#eventType').val()
+			|| !$('#eventHost').val() || !$('#startDateTime').val() || !$('#startTime').val()
+			|| !$('#endDateTime').val() || !$('#endTime').val()
+		);
+	};
+
+	self.stuff = function() {
+		console.log(self.incompleteFields());
+	};
 };
 
 // initialize ViewModel and apply bindings
@@ -142,11 +186,4 @@ function geolocate() {
 
 $('#eventModal').on('shown.bs.modal', function (e) {
   initAutocomplete();
-});
-
-// index.html page
-var signUp = $('#sign-up-button');
-
-signUp.click(function() {
-	window.location.href = 'event.html';
 });
