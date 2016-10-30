@@ -26,7 +26,8 @@
     const displayFormIssues = $('#displayFormIssues');
 
     var firstInputIssues, secondInputIssues;
-    var email, password;
+    var username, email, password;
+    var newUser = false;
     const auth = firebase.auth();
 
 
@@ -84,6 +85,7 @@
     
     // Add signup event
     btnSignUp.click(function(){
+        username = textName.val();
         email = textEmail.val();
         password = textPassword.val();
         const password2 = textConfirmPassword.val(); 
@@ -158,39 +160,41 @@
         textPassword[0].setCustomValidity(firstInputIssues);
         textConfirmPassword[0].setCustomValidity(secondInputIssues);
 
-        /*
-        You would probably replace this with a POST message in a real app.
-        */
-        // ENDS HERE
+        if (firstInputIssues.length + secondInputIssues.length === 0) {
+
+            newUser = true;
+            
+            const promise = auth.createUserWithEmailAndPassword(email, password); // returns a promise
+
+            promise.catch(function(e) {
+                displayFormIssues.html(e.message);
+            });
+        }        
     });
 
     // this prevents form from submitting but allows use of setCustomValidity
     formAuth.submit(function() {
-        console.log(firstInputIssues);
-        if (firstInputIssues.length + secondInputIssues.length === 0) {
-
-            const promise = auth.createUserWithEmailAndPassword(email, password); // returns a promise
-
-            promise.then(function() {
-                window.location.href = 'event.html';
-            }).catch(function(e) {
-                displayFormIssues.html(e.message);
-            });
-        }
         return false;        
     })
-    
-    
-    // real time authentication listener
+        
+    // check for current user
     firebase.auth().onAuthStateChanged(function(firebaseUser) {
         if (firebaseUser) {
-            console.log(firebaseUser);
-            // TODO: show log out button when user is logged in
+            if (newUser) {
+                firebase.database().ref('users/' + firebaseUser.uid).set({
+                    username: username,
+                    email: email
+                }).then(function() {
+                    window.location.href = 'event.html';        
+                });
+            } else {
+                    window.location.href = 'event.html';
+            }
         } else {
             console.log('not logged in');
-            // TODO: hide log out btn when no user is logged in
-        }
+        }            
     });
+    
 
     // a class that tracks any password issues
     function IssueTracker() {
@@ -216,7 +220,7 @@
         }
         return message;
       }
-    };    
+    };        
 }());
 
 

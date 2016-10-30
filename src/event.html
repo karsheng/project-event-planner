@@ -49,8 +49,9 @@
 	<body>
 		<main class="container">
 			<h1>Event Page</h1>
+			<button id='testbtn'>test</button>
 			<!-- Button trigger modal -->
-			<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#eventModal" data-bind="click: addNewEvent">
+			<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#eventModal" data-bind="click: newEventForm">
 			  Add an Event
 			</button>
 			<button id="btnLogOut" type="button" class="btn btn-danger btn-sm">Log Out</button>
@@ -138,7 +139,7 @@
 								</div>
 								<label class="col-sm-2 control-label"></label>
 								<div class="col-sm-10">
-									<ul class="guest-list" data-bind="foreach: guests">
+									<ul class="guest-list" data-bind="foreach: $parent.currentGuestList">
 										<a class="guest-list-item"><li data-bind="text: $data"></li><span class="glyphicon glyphicon-remove" data-bind="click: $parents[1].removeGuest"></span></a>
 									</ul>
 								</div>
@@ -146,8 +147,10 @@
 						</form>		        
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-						<button id="saveEventBtn" type="button" class="btn btn-primary" data-bind="click: saveEvent">Add</button>
+						<button id="addEventBtn" type="button" class="btn btn-success" data-bind="click: addEvent">Add</button>
+						<button id="updateEventBtn" type="button" class="btn btn-success" data-bind="click: updateEvent">Update</button>
+						<button id="saveDraftBtn" type="button" class="btn btn-primary" data-bind="click: saveDraft">Save Draft</button>
+						<button id="deleteEventBtn" type="button" class="btn btn-danger" data-bind="click: deleteEvent">Delete Event</button>
 						<button data-bind="click: stuff">suck</button>
 					</div>
 				</div>
@@ -158,6 +161,6 @@
 			<!-- Latest compiled and minified JavaScript -->
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 		<script src="js/app.js"></script>
-    	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDuoB62jzCkrFV9NVlNHj5cZTvXvjJAdbk&libraries=places" async defer></script>		
+		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDuoB62jzCkrFV9NVlNHj5cZTvXvjJAdbk&libraries=places&callback=initAutocomplete" async defer></script>	
 	</body>
 </html>
