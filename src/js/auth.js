@@ -181,6 +181,7 @@
     firebase.auth().onAuthStateChanged(function(firebaseUser) {
         if (firebaseUser) {
             if (newUser) {
+                firebaseUser.updateProfile({displayName: username});
                 firebase.database().ref('users/' + firebaseUser.uid).set({
                     username: username,
                     email: email

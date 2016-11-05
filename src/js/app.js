@@ -11,10 +11,6 @@
 
 })();
 
-	$('#testbtn').click(function() {
-		//console.log(model.newEvent);
-		initAutocomplete();		
-	});
 // add log out function
 	const btnLogOut = $('#btnLogOut');
 
@@ -35,7 +31,7 @@ firebase.auth().onAuthStateChanged(function(firebaseUser) {
 });
 
 
-var Event = function(key) {
+var Event = function() {
 	this.name = '';
 	this.location = '';
 	this.type = '';
@@ -44,7 +40,7 @@ var Event = function(key) {
 	this.startTime = '09:00';
 	this.endDate = '';
 	this.endTime = '18:00';
-	this.key = key;
+	this.key = '';
 	this.guests = [];
 };
 
@@ -69,42 +65,51 @@ var ViewModel = function() {
 	self.deleteEventBtn = $('#deleteEventBtn');
 	self.eventModalLabel = $('#eventModalLabel');
 	self.eventModal = $('#eventModal');
-
-	self.eventLocationText = $('#eventLocation');
-
 	self.currentEvent = ko.observable();	
+
 
 	self.init = function(user) {
 		self.fbEventsRef = firebase.database().ref('users/' + user.uid + '/events/');
-		model.currentEvent(model.newEvent);
 		self.syncRefWithView();
+		$('#welcomeUser').html('Hello, ' + user.displayName + '!');
 	}
 
 	self.syncRefWithView = function(){
-		self.fbEventsRef.on('child_added', function(event) {
-			if (event.val()) {
-				self.eventList.push(event.val());
-			}
-		});
+		try {
+			self.fbEventsRef.on('child_added', function(event) {
+				if (event.val()) {
+					self.eventList().forEach(function(existedEvent) {
+						if (event.val().key === existedEvent.key) return;
+					});
+					self.eventList.push(event.val());
+				}
 
-		self.fbEventsRef.on('child_changed', function(event) {
-			var updatedEvent = event.val();
-			var index = self.currentEventIndex;
-			
-			self.eventList.splice(index , 1);
-			self.eventList.splice(index , 0, updatedEvent);			
-		});
+			});
 
-		self.fbEventsRef.on('child_removed', function(event) {
-			var index = self.currentEventIndex;
-			self.eventList.splice(index , 1);
-			alert('removed!');
-		});
+			self.fbEventsRef.on('child_changed', function(event) {
+				var updatedEvent = event.val();
+				var index = self.currentEventIndex;
+				
+				self.eventList.splice(index , 1);
+				self.eventList.splice(index , 0, updatedEvent);			
+			});
+
+			self.fbEventsRef.on('child_removed', function(event) {
+				var index = self.currentEventIndex;
+				self.eventList.splice(index , 1);
+				alert('removed!');
+			});		
+		}
+		catch(e) {
+			console.log(e);
+		}
 	};
 
 	// add guest to list
 	self.addGuestToList = function(data, event) {
+
 		if(event.keyCode === 13) {
+			event.preventDefault();
 			self.currentGuestList.push(event.target.value);
 			event.target.value = "";
 		}
@@ -117,6 +122,9 @@ var ViewModel = function() {
 	};
 
 	self.addEvent = function() {
+
+		if (self.incompleteFields()) return;
+
 		var event = self.currentEvent();
 		event.guests = [];
 
@@ -134,9 +142,14 @@ var ViewModel = function() {
 		self.fbEventsRef.update(updates);
 
 		self.newEvent = new Event();
+
+		self.eventModal.modal('toggle');
 	};
 
 	self.updateEvent = function() {
+
+		if (self.incompleteFields()) return;
+		
 		var event = self.currentEvent();
 		event.guests = [];
 
@@ -146,8 +159,10 @@ var ViewModel = function() {
 
 		var updates = {};
 		updates[event.key] = event;
-		self.fbEventsRef.update(updates);		
-
+		self.fbEventsRef.update(updates)
+		.catch(function(e) {
+			alert('Something went wrong, please try again later');
+		});
 	};
 
 	self.saveDraft = function() {
@@ -194,7 +209,7 @@ var ViewModel = function() {
 		// clear value
 		self.addEventBtn.show();
 		self.saveDraftBtn.show();
-
+		
 		self.deleteEventBtn.hide();
 		self.updateEventBtn.hide();
 
@@ -210,49 +225,43 @@ var ViewModel = function() {
 	};
 
 	self.incompleteFields = function() {
-		return (!$('#eventName').val() || !$('#eventLocation').val() || !$('#eventType').val()
-			|| !$('#eventHost').val() || !$('#startDateTime').val() || !$('#startTime').val()
-			|| !$('#endDateTime').val() || !$('#endTime').val()
-		);
+
+		if (self.checkFields($('#eventName'))) return self.displayMessage('event name.');
+		if (self.checkFields($('#eventLocation'))) return self.displayMessage('event location.');
+		if (self.checkFields($('#eventType'))) return self.displayMessage('event type.');
+		if (self.checkFields($('#eventHost'))) return self.displayMessage('event host.');
+		if (self.checkFields($('#startDateTime'))) return self.displayMessage('event start date.');
+		if (self.checkFields($('#startTime'))) return self.displayMessage('event start time.');
+		if (self.checkFields($('#endDateTime'))) return self.displayMessage('event end date.');
+		if (self.checkFields($('#endTime'))) return self.displayMessage('event end time.');
+
+		if (self.currentGuestList().length === 0) {
+			$('#guestInput').focus();
+			self.displayMessage('at least one guest.');
+			return true;
+		}
+
+		return false;
 	};
 
-	self.stuff = function() {
-		// console.log(self.incompleteFields());
+	self.checkFields = function($inputElement) {
 
+		if(!$inputElement.val()) {
+
+			$inputElement.focus();
+
+			return true;
+		}
+		
+		return false;
+	};
+
+	self.displayMessage = function(message) {
+		$('#incompleteFieldMsg').html('Missing field: Please enter ' + message);
+		return true;
 	};
 };
 
 // initialize ViewModel and apply bindings
 var model = new ViewModel();
 ko.applyBindings(model);
-
-var autocomplete;
-
-function initAutocomplete() {
-	// Create the autocomplete object, restricting the search to geographical
-	// location types.
-	autocomplete = new google.maps.places.Autocomplete(
-	/** @type {!HTMLInputElement} */
-	(document.getElementById('eventLocation')),
-	{types: ['geocode']});	
-	
-}
-
-// Bias the autocomplete object to the user's geographical location,
-// as supplied by the browser's 'navigator.geolocation' object.
-function geolocate() {
-
-	if (navigator.geolocation) {
-  		navigator.geolocation.getCurrentPosition(function(position) {
-    		var geolocation = {
-      			lat: position.coords.latitude,
-      			lng: position.coords.longitude
-    		};
-    		var circle = new google.maps.Circle({
-      			center: geolocation,
-     			radius: position.coords.accuracy
-    		});
-    		autocomplete.setBounds(circle.getBounds());
-  		});
-	}
-}
